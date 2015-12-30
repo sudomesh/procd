@@ -47,10 +47,17 @@ static void watchdog_timeout_cb(struct uloop_timeout *t)
 
 void watchdog_set_stopped(bool val)
 {
-	if (val)
+	if (val) {
 		uloop_timeout_cancel(&wdt_timeout);
-	else
+		if (wdt_fd < 0) {
+			close(wdt_fd);
+			wdt_fd = -1;
+		}
+	} else {
 		watchdog_timeout_cb(&wdt_timeout);
+		if (wdt_fd < 0) 
+			watchdog_init(0);
+	}
 }
 
 bool watchdog_get_stopped(void)
