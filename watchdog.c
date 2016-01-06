@@ -49,7 +49,7 @@ void watchdog_set_stopped(bool val)
 {
 	if (val) {
 		uloop_timeout_cancel(&wdt_timeout);
-		if (wdt_fd < 0) {
+		if (wdt_fd >= 0) {
 			close(wdt_fd);
 			wdt_fd = -1;
 		}
